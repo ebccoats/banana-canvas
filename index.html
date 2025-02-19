@@ -2,19 +2,103 @@
 <head>
     <meta charset="utf-8" />
     <title>Banana Thing</title>
-    <style>
-        canvas {
-            border: 1px solid black;
-        }
-    </style>
-    <script src="script.js" async></script>
+    
+    <script src="scripts/script-2-10-25.js" async></script>
+    <script src="scripts/script-2-12-25_1.js" async></script>
+    <script src="scripts/script-2-12-25_2.js" async></script>
+    <script src="scripts/script-2-12-25_3.js" async></script>
+    <script src="scripts/script-2-13-25_1.js" async></script>
+    <script src="scripts/script-2-16-25_1.js" async></script>
+    <script src="scripts/script-2-18-25_1.js" async></script>
+
+    <link rel="stylesheet" type="text/css" href="css/styles.css" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&family=Special+Elite:wght@400..700&family=VT323&family=Lacquer&family=Walter+Turncoat&display=swap" rel="stylesheet">
 </head>
 <body>
-<h1>Banana Things</h1>
-<h2>Happening</h2>
+<h1>Progress</h1>
 
-<canvas id="game-field" width="500" height="500"></canvas>
+<h2>February 10, 2025</h2>
+<p>Tonight's goal was to get my assets organized + into github, and to get a sprite to show up on the page. Earlier today I wrote a bunch of notes on what I could put on the project review page, for example: </p>
+<pre>
+<code>
+I was living in New York and inspired by my environment. 
+Spiteful fantasies about pedestrians who get in my way.
+</code>
+</pre>
+<p>Anyway, I moved the sprites over from the 10 year old Swift project. And I read <code>&lt;canvas&gt;</code> documentation and got a png to appear!</p>
+<canvas id="tiny_banana" width="200" height="200"></canvas>
+<p>Then I got the png to be bigger</p>
+<canvas id="blurry_banana" width="200" height="200"></canvas>
+<p> but it's ugly and blurry, so I did this:</p>
+<pre>
+<code>
+    ctx.imageSmoothingEnabled = false; // Disable smoothing
+    ctx.mozImageSmoothingEnabled = false; // For Firefox support
+    ctx.webkitImageSmoothingEnabled = false; // For Safari/Chrome support
+    ctx.msImageSmoothingEnabled = false; // For IE/Edge support
+</code>
+</pre>
+<p>and look, yay it works!</p>
+<canvas id="banana" width="200" height="200">
+    current stock price: $300
+</canvas>
 
-<canvas id="sprite-field" width="200" height="200"></canvas>
+<h2>February 12, 2025</h2>
+<p>I can't rest on my laurels.</p>
+<p>To do:<ul>
+    <li>sprite animation of banana crawling</li>
+    <li>character object that owns it & moves it across canvas</li>
+    <li>controllable by keys</li>
+    <li>3 different canvases you can scroll to and they will activate</li>
+    <li>baby chases you</li>
+    <li>you are baby & chase banana</li>
+</ul></p>
+<p>I'm reinventing the wheel here because there are libraries that do exactly what I'm trying to do. BUT this is about learning <code>&lt;canvas&gt;</code> and before doing this I did not realize that all those browser game-making libraries are built on <code>&lt;canvas&gt;</code> so look at that, I'm learning. </p>
+<p>1. Started separating things out into functions in <code><a href="script-2-12-25_1.js">script-2-12-25_1.js</a></code>. Now there's a sprite object and a canvas object. When you click, the sprite advances through its animation:<br><button id="next-frame">-> Next Frame <-</button></p>
+
+<canvas id="click_banana" width="200" height="200"></canvas>
+<p>Here is the banana truckin on its own:</p>
+<canvas id="flashy_banana" width="200" height="200"></canvas>
+<p>Except yuck, he's flashing every frame when the canvas clears. If I draw the new frame, THEN clear the canvas, THEN redraw, he'll animate without flashing:</p>
+<canvas id="autonomous_banana" width="200" height="200"></canvas>
+<p>2. Made a entity object that possesses sprite animations in <code><a href="script-2-12-25_2.js">script-2-12-25_2.js</a></code> but couldn't figure out how to mirror-flip the image on its way back. I think I need to make a new canvas, new script, and just figure out how to mirror-flip an image of the banana with none of the other stuff going on. But this made me so frustrated I needed to take a break.</p>
+<canvas id="crawling_banana" width="500" height="200"></canvas>
+<p>3. FFS I don't know maybe it's impossible to mirror an image from drawImage. The only way I could get it to work was by flipping the canvas itself with <code>scale(-1, 1)</code> and then <code>drawImage()</code>'ing that flipped canvas into the bigger canvas:</p>
+<canvas id="game-field" width="200" height="200"></canvas>
+<p>It's blurry because if I copied and pasted another line of code tonight I would barf.</p>
+
+<h2>February 13, 2025</h2>
+<p>Ok, if I hadn't gotten stuck trying to flip images I probably would have gotten farther yesterday. </p>
+<p>More fiddling with canvases today. Apparently all the context flipping has to happen in the <code>onload = function() { stuff here } </code> part so I can't flip the rendering context around in the entity handler, I have to do it in the animation handler. Pain in the ass to figure out why it wasn't flipping.</p>
+<p>However here is the banana crawling back and forth, check it out, when you click it changes directions:<br><button id="change-direction">-> Change Direction <- </button></p>
+<canvas id="game-field-2" width="500" height="200"></canvas>
+<p>and it SHOULD be super easy to make another character who's a baby, but look at the code <code>script-2-13-25_1.js</code> there's something where the animation sets are conflicting with each other even though they're in different variables?? I have no idea. Un-comment <code>drawBaby()</code> in <code>script-2-13-25_1.js</code> to see what I'm talking about...</p>
+<canvas id="baby" width="500" height="200"></canvas>
+<p>Maybe it's just because I have five different scripts conflicting with each other on this page... but I don't understand why it can't handle two characters.</p>
+
+<h2>February 16, 2025</h2>
+<p>Nope, it was because I was so rusty that I'd forgotten classes exist in javascript and was trying to make functions be classes, which is not as effective as just using classes.</p>
+<p>Also I was using <code>var</code> instead of <code>const</code> / <code>let</code> and my scope was getting messed up. </p>
+<p>So I changed my three functions cosplaying as classes into actual classes, and now multiple characters work at one time:<br> <button id="generate-baby">-> Add Baby <-</button><button id="flip-babies">-> Flip Babies <-</button></br></p>
+<canvas id="many-characters" width="500" height="200"></canvas>
+<p>More or less.</p>
+<p>Adding more babies freezes the babies but only sometimes! Is this because of the animation in progress boolean? Maybe!</p>
+<h3>Using A Sprite Sheet</h3>
+<p>All animations so far are sets of <code>png</code> files in an array</p>
+<pre><code>
+    const baby_sprites_const = ["baby00.png", "baby01.png", "baby02.png", "baby03.png"];
+    var banana_sprites = ["banana00.png", "banana01.png", "banana02.png"];
+
+</code></pre>
+<p>But that means the code is loading the image from source every time it wants to draw it, which might have something to do with the image flashing and anyway is inefficient. Since I'm drawing these frames on an invisible canvas that then gets drawn to the main canvas, doing a sprite sheet on that invisible canvas and then just cropping sections to draw to the main canvas should be super straightforward if I write an animation sprite handler. </p>
+<img src="images/baby-sprites.png" height="150" >
+
+<h2>February 18, 2025</h2>
+<p>Ok, wrote a sprite handler! But it's not working when I move it over to this log page from the working page I was in. It says ctx is undefined.  <button id="sprite-clicker-button">Sprite Clicker Button</button></p>
+<canvas id="sprite-clicker" height="200" width="500"></canvas>
 </body>
+
 </html>

@@ -1,4 +1,4 @@
-var character_path = "images/characters/";
+var character_path = "../images/characters/";
 var banana_sprites = ["banana00.png", "banana01.png", "banana02.png", "banana03.png"];
 
 
