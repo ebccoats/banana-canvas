@@ -1,13 +1,10 @@
-var character_path = "../images/characters/";
-var banana_sprites = ["banana00.png", "banana01.png", "banana02.png", "banana03.png"];
-
 
 // for tomorrow: make every entity object have its own offscreen canvas to draw its animations on. Then it can easily flip the offscreen canvas. 
 function draw_flipped() {
     const offscreen = new OffscreenCanvas(40, 40);
     const off_ctx = offscreen.getContext("2d");
 
-    const canvas_big = document.getElementById("game-field");
+    const canvas_big = document.getElementById("flipped-banana");
     const ctx_big = canvas_big.getContext("2d");
     if (canvas_big.getContext) {
         // drawing code here    

@@ -1,6 +1,3 @@
-var character_path = "../images/characters/"
-var banana_sprites = ["banana00.png", "banana01.png", "banana02.png", "banana03.png"];
-
 function canvasMaker(canvasId) {
     const canvas = document.getElementById(canvasId);
     if (canvas.getContext) {
@@ -19,17 +16,19 @@ function canvasMaker(canvasId) {
     }
 }
 
-function entityMaker(x, y, sprites, sprite_width, sprite_height, move_increment) {
-    this.animations = [sprites];
-    this.currentAnimation = 0;
-    this.x = x;
-    this.y = y;
-    this.scale = 200;
-    this.width = sprite_width;
-    this.height = sprite_height;
-    this.pace = move_increment;
-    this.faceRight = true;
-    this.move = function() {
+class entity_Maker {
+    constructor(x, y, sprites, sprite_width, sprite_height, move_increment) {
+        this.animations = [sprites];
+        this.currentAnimation = 0;
+        this.x = x;
+        this.y = y;
+        this.scale = 200;
+        this.width = sprite_width;
+        this.height = sprite_height;
+        this.pace = move_increment;
+        this.faceRight = true;
+    }
+    move() {
         if (this.faceRight) { 
             this.x = this.x + this.pace;
         } else {
@@ -37,7 +36,7 @@ function entityMaker(x, y, sprites, sprite_width, sprite_height, move_increment)
         }
     } 
 
-    this.drawEntity = function(ctx) {
+    drawEntity(ctx) {
         if (this.faceRight) {
             this.animations[this.currentAnimation].faceRight = true;
         } else {
@@ -47,25 +46,24 @@ function entityMaker(x, y, sprites, sprite_width, sprite_height, move_increment)
         this.animations[this.currentAnimation].nextFrame();
     }
 
-    this.centerX = function() {
-        centerX = this.x;
-        return centerX;
-    }
+    centerX = () => this.x
 
     
 } 
 
 // TODO add timing source argument to maker
-function animationMaker(sprite_set) {
-    this.animation_inProgress = false;
-    this.frames = sprite_set;
-    this.frame_timing = [1, 1, 1, 1];
-    this.currentFrame = 0;
-    this.width = 40; // this is hard coded for now
-    this.height = 40; // this is hard coded for now
-    this.flipped_width = -40 // this is hard coded for now
-    this.faceRight = true;
-    this.nextFrame = function() {  // QUESTION: is there a cleaner way to do this?
+class animation__Maker {
+    constructor(sprite_set) {
+        this.animation_inProgress = false;
+        this.frames = sprite_set;
+        this.frame_timing = [1, 1, 1, 1];
+        this.currentFrame = 0;
+        this.width = 40; // this is hard coded for now
+        this.height = 40; // this is hard coded for now
+        this.flipped_width = -40 // this is hard coded for now
+        this.faceRight = true;
+    }
+    nextFrame() {  // QUESTION: is there a cleaner way to do this?
         if (this.currentFrame == (this.frames.length - 1)) {
             this.currentFrame = 0;
             this.animation_inProgress = false;
@@ -75,7 +73,7 @@ function animationMaker(sprite_set) {
         } 
     }
     
-    this.drawFrame = function(ctx, x, y, scale) {
+    drawFrame(ctx, x, y, scale) {
         var width = scale
         if (this.faceRight == false) {
             width = scale * -1;
@@ -91,9 +89,9 @@ function animationMaker(sprite_set) {
 
 }
 
-var banana_animation_crawling = new animationMaker(banana_sprites, "placeholder"); 
-var banana = new entityMaker(0, 0, banana_animation_crawling, 40, 40, 10);
-var banana_crawling = canvasMaker("crawling_banana");
+var banana_animation_crawling = new animation_Maker(banana_sprites, "placeholder"); 
+var banana = new entity_Maker(0, 0, banana_animation_crawling, 40, 40, 10);
+var banana_crawling = canvasMaker("crawling-banana");
 
 function crawl_draw() {
     banana.drawEntity(banana_crawling.ctx);

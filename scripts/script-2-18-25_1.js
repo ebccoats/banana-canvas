@@ -1,6 +1,6 @@
 let baby_sprite_source = "images/baby-sprites.png";
 
-const sprite_clicker = document.getElementById("sprite-clicker");
+const sprite_clicker = document.getElementById("sprite-manual-animation");
 let sprite_clicker_ctx = sprite_clicker.getContext("2d");
 sprite_clicker_ctx.imageSmoothingEnabled = false;
 
@@ -19,7 +19,7 @@ function sprite_clicker_drawFrame() {
 
 }
 
-sprite_clicker_button = document.getElementById("sprite-clicker-button");
+const sprite_clicker_button = document.getElementById("sprite-manual-next-frame");
 sprite_clicker_button.addEventListener("click", sprite_clicker_drawFrame);
 
 

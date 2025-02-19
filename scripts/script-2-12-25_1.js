@@ -1,5 +1,3 @@
-var character_path = "../images/characters/"
-var banana_sprites = ["banana00.png", "banana01.png", "banana02.png", "banana03.png"];
 
 function canvasMaker(canvasId) {
     const canvas = document.getElementById(canvasId);
@@ -19,8 +17,30 @@ function canvasMaker(canvasId) {
     }
 }
 
-// TODO add timing source argument to maker
-function animationMaker(sprite_set) {
+class AnimationMaker {
+    constructor(sprite_set) {
+        this.frames = sprite_set;
+        this.currentFrame = 0;
+    }
+
+    nextFrame() {
+        if (this.currentFrame == this.frames.length - 1) {
+            this.currentFrame = 0;
+        } else {
+            this.currentFrame++;
+        }
+    }
+
+    drawFrame(ctx, x, y, scale) {
+        let frame = new Image();
+        frame.src = character_path + this.frames[this.currentFrame];
+        frame.onload = function() {
+            ctx.drawImage(frame, x, y, scale, scale);
+        }
+    }
+}
+
+function animation_Maker(sprite_set) {
     this.frames = sprite_set;
     this.frame_timing = [1, 1, 1, 1];
     this.currentFrame = 0;
@@ -42,20 +62,40 @@ function animationMaker(sprite_set) {
 
 }
 
-var banana_animation = new animationMaker(banana_sprites, "placeholder"); 
-var click_banana = canvasMaker("click_banana");
+let banana_animation;
+let click_banana = canvasMaker("manual-animation");
 
-var autonomous_banana_animation = new animationMaker(banana_sprites, "placeholder");
-var autonomous_banana = canvasMaker("autonomous_banana");
+let autonomous_banana_animation;
+let autonomous_banana = canvasMaker("not-flashing-animation");
 
-var flashy_banana_animation = new animationMaker(banana_sprites, "placeholder");
-var flashy_banana = canvasMaker("flashy_banana");
+let flashy_banana_animation;
+let flashy_banana = canvasMaker("flashing-animation");
+
+function handle_with_functions() {
+    banana_animation = new animation_Maker(banana_sprites, "placeholder"); 
+    autonomous_banana_animation = new animation_Maker(banana_sprites, "placeholder");
+    flashy_banana_animation = new animation_Maker(banana_sprites, "placeholder");
+}
+
+function handle_with_classes() {
+    banana_animation = new AnimationMaker(banana_sprites, "placeholder"); 
+    autonomous_banana_animation = new AnimationMaker(banana_sprites, "placeholder");
+    flashy_banana_animation = new AnimationMaker(banana_sprites, "placeholder");
+}
+
+function draw_on_load() {
+    handle_with_functions();
+    click_banana.ctx.clearRect(0, 0, 200, 200);
+    banana_animation.drawFrame(click_banana.ctx, 0, 0, 200);
+    banana_animation.nextFrame();
+}
 
 function draw_on_click() {
     click_banana.ctx.clearRect(0, 0, 200, 200);
     banana_animation.drawFrame(click_banana.ctx, 0, 0, 200);
     banana_animation.nextFrame();
 }
+
 
 function draw_on_timer() {
     autonomous_banana_animation.drawFrame(autonomous_banana.ctx, 0, 0, 200);
@@ -68,8 +108,13 @@ function draw_on_timer() {
     flashy_banana_animation.nextFrame();
 }
 
-const frames_button = document.getElementById("next-frame");
+const frames_button = document.getElementById("manual-next-frame");
+const class_button = document.getElementById("use-classes");
+const functions_button = document.getElementById("use-functions");
 
-window.addEventListener("load", draw_on_click);
+window.addEventListener("load", draw_on_load);
 frames_button.addEventListener("click", draw_on_click);
-window.setInterval(draw_on_timer, 300);
+class_button.addEventListener("click", handle_with_classes);
+functions_button.addEventListener("click", handle_with_functions);
+
+window.setInterval(draw_on_timer, 500);

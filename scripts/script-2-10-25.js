@@ -1,8 +1,8 @@
-var character_path = "../images/characters/"
+var character_path = "images/characters/"
 var banana_sprites = ["banana00.png", "banana01.png", "banana02.png", "banana03.png"];
 
 function draw() {
-    const canvas1 = document.getElementById("tiny_banana");
+    const canvas1 = document.getElementById("banana-appears");
     if (canvas1.getContext) {
         const ctx1 = canvas1.getContext("2d");
         // drawing code here    
@@ -15,7 +15,7 @@ function draw() {
         // canvas-unsupported code here
     }
  
-    const canvas2 = document.getElementById("blurry_banana");
+    const canvas2 = document.getElementById("resized-but-blurry");
     if (canvas2.getContext) {
         const ctx2 = canvas2.getContext("2d");
         // drawing code here    
@@ -28,7 +28,7 @@ function draw() {
         // canvas-unsupported code here
     }
   
-    const canvas = document.getElementById("banana");
+    const canvas = document.getElementById("resized-not-blurry");
     if (canvas.getContext) {
         const ctx = canvas.getContext("2d");
         ctx.imageSmoothingEnabled = false; // Disable smoothing

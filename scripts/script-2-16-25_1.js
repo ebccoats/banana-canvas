@@ -1,6 +1,4 @@
-var character_path = "../images/characters/"
-var banana_sprites = ["banana00.png", "banana01.png", "banana03.png",  "banana02.png"];
-const baby_sprites_const = ["baby00.png", "baby01.png", "baby02.png", "baby03.png"];
+const baby_imgs_const = ["baby00.png", "baby01.png", "baby02.png", "baby03.png"];
 
 
 class gameCanvas {
@@ -132,9 +130,9 @@ class Animation {
 
 //const banana_animation = new Animation(banana_sprites); 
 //const banana = new Entity(0, 0, banana_animation, 40, 40, 30);
-const many_characters = new gameCanvas("many-characters");
+const many_characters = new gameCanvas("many-babies");
 
-const baby_animation_1 = new Animation(baby_sprites_const);
+const baby_animation_1 = new Animation(baby_imgs_const);
 const baby_gen1 = new Entity(10, 10, baby_animation_1, 40, 40, 20);
 
 const babies = [baby_gen1];
@@ -168,7 +166,7 @@ function flip() {
     }
 }
 
-const button = document.getElementById("generate-baby");
+const button = document.getElementById("add-baby");
 button.addEventListener("click", addBaby)
 const button2 = document.getElementById("flip-babies");
 button2.addEventListener("click", flip);

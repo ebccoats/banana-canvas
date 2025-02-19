@@ -1,6 +1,5 @@
-var character_path = "../images/characters/"
-var banana_sprites_13 = ["banana00.png", "banana01.png", "banana02.png"];
-var baby_sprites = ["baby00.png", "baby01.png", "baby02.png", "baby03.png"];
+let banana_sprites_13 = ["banana00.png", "banana01.png", "banana02.png"];
+let baby_sprites = ["baby00.png", "baby01.png", "baby02.png", "baby03.png"];
 
 function canvasMaker(canvasId) {
     const canvas = document.getElementById(canvasId);
@@ -128,8 +127,8 @@ var banana_animation_13 = new animationMaker(banana_sprites_13, "placeholder");
 var baby_animation = new animationMaker(baby_sprites, "placeholder"); 
 var banana_13 = new entityMaker(0, 0, banana_animation_13, 40, 40, 30);
 var baby = new entityMaker(0, 0, baby_animation, 40, 40, 20);
-var game_field_2 = canvasMaker("game-field-2");
-var baby_field = canvasMaker("baby");
+var game_field_2 = canvasMaker("crawling-flippable");
+var baby_field = canvasMaker("swap-for-baby");
 
 function drawGameField() {
     banana_13.drawEntity(game_field_2.ctx);
@@ -143,7 +142,10 @@ function drawGameField() {
         banana_13.flip();
     }
 
-    //drawBaby();
+    if (baby_swap) {
+        drawBaby();
+    }
+  
 
     function drawBaby() {
         baby.drawEntity(baby_field.ctx);
@@ -171,8 +173,20 @@ function b13flip() {
     
 }
 
+let baby_swap = false;
+
+function swap_for_baby(){
+    if (baby_swap) {
+        baby_swap = false;
+    } else {
+        baby_swap = true;
+    }
+}
+
 const flipbutton = document.getElementById("change-direction");
+const swap_button = document.getElementById("swap");
 window.addEventListener("load", drawGameField);
 window.setInterval(drawGameField, 300);
 
 flipbutton.addEventListener("click", b13flip);
+swap_button.addEventListener("click", swap_for_baby);
