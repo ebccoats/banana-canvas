@@ -18,71 +18,132 @@
     <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&family=Special+Elite:wght@400..700&family=VT323&family=Lacquer&family=Walter+Turncoat&display=swap" rel="stylesheet">
 </head>
 <body>
-<h1>Progress</h1>
 
-<h2>February 10, 2025</h2>
-<p>Tonight's goal was to get my assets organized + into github, and to get a sprite to show up on the page. Earlier today I wrote a bunch of notes on what I could put on the project review page, for example: </p>
+<h1>Animating a Banana in HTML Canvas</h1>
+
+<h2>Part I - February 10, 2025</h2>
 <pre>
-<code>
-I was living in New York and inspired by my environment. 
-Spiteful fantasies about pedestrians who get in my way.
+<code class="language-js">
+I was living in New York and inspired by my environment... 
+Having spiteful fantasies about the pedestrians in my way.
 </code>
 </pre>
-<p>Anyway, I moved the sprites over from the 10 year old Swift project. And I read <code>&lt;canvas&gt;</code> documentation and got a png to appear!</p>
+<p>Back in 2015 I taught myself how to code with Udemy videos on Swift so I could make a game where you're a banana peel crawling around New York City, trying to make people step on you and wipe out.</p> 
+<p>I made one level of <u>The Wild Bunch</u>, but I hardcoded all the assets and game logic. That meant nothing I'd built was multipurpose. It meant I would have had to rewrite the entire game to make a second level. It was a painful lesson on why scalable code is important. </p>
+<p>In 2025 I wanted to get back into coding, and instead of Udemy I talked my <a href="http://tombetthauser.com">cousin</a> into running a one-person bootcamp. We chose this page as my first challenge. I still had all the sprites I'd animated. I could get it working again with no frameworks or libraries, just the <code>&lt;canvas&gt;</code> HTML element and vanilla Javascript. </p> 
+<p>It took me a stupid amount of time reading <code>&lt;canvas&gt;</code> documentation to make this 40x40 pixel png show up in the <code>&lt;canvas&gt;</code> element, but you can just push a button.</p>
+<p><button id="make-banana-appear">Make Banana Appear</button> <button id="make-banana-bigger">Make Bigger</button> <button id="static-banana-clear">Reset</button> </p>
 <canvas id="banana-appears" width="200" height="200"></canvas>
-<p>Then I got the png to be bigger</p>
 <canvas id="resized-but-blurry" width="200" height="200"></canvas>
-<p> but it's ugly and blurry, so I did this:</p>
+<p> You may notice how blurry and ugly it is. That's why you add this code:</p>
 <pre>
-<code>
-    ctx.imageSmoothingEnabled = false; // Disable smoothing
-    ctx.mozImageSmoothingEnabled = false; // For Firefox support
-    ctx.webkitImageSmoothingEnabled = false; // For Safari/Chrome support
-    ctx.msImageSmoothingEnabled = false; // For IE/Edge support
+<code class="language-js">
+ctx.imageSmoothingEnabled = false; // Disable smoothing
+ctx.mozImageSmoothingEnabled = false; // For Firefox support
+ctx.webkitImageSmoothingEnabled = false; // For Safari/Chrome support
+ctx.msImageSmoothingEnabled = false; // For IE/Edge support
 </code>
 </pre>
-<p>and look, yay it works!</p>
+<p><button id="unblur-banana">Disable Image Smoothing</button> <button id="reblur-banana">Enable Image Smoothing</button> </p>
 <canvas id="resized-not-blurry" width="200" height="200">
     current stock price: $300
 </canvas>
+<hr>
 
-<h2>February 12, 2025</h2>
+<h2>Part II - February 12, 2025</h2>
 <p>I can't rest on my laurels.</p>
-<p>To do:<ul>
-    <li>sprite animation of banana crawling</li>
-    <li>character object that owns it & moves it across canvas</li>
-    <li>controllable by keys</li>
-    <li>3 different canvases you can scroll to and they will activate</li>
-    <li>baby chases you</li>
-    <li>you are baby & chase banana</li>
-</ul></p>
-<p>I'm reinventing the wheel here because there are libraries that do exactly what I'm trying to do. BUT this is about learning <code>&lt;canvas&gt;</code> and before doing this I did not realize that all those browser game-making libraries are built on <code>&lt;canvas&gt;</code> so look at that, I'm learning. </p>
-<p>1. Started separating things out into functions in <code><a href="script-2-12-25_1.js">script-2-12-25_1.js</a></code>. Now there's a sprite object and a canvas object. When you click, the sprite advances through its animation:<br><button id="manual-next-frame">-> Next Frame <-</button></p>
+<p>There are javascript game engines out there that would make this a lot faster and easier. But this is all about learning how basic elements work, and learning how <code>&lt;canvas&gt;</code> works, specifically. Before starting this, I didn't realize that all those engines and libraries are built on top of the <code>&lt;canvas&gt;</code> element. So that's cool, I'm learning. And I know enough Javascript to puzzle this out!</p>
+
+<h3>Animating the Banana</h3>
+<p>I started separating things out into functions. Now there's a sprite function and a canvas function. You can click to advance the banana through its animation frames:</p>
+<p><button id="manual-next-frame">-> Next Frame <-</button></p>
 
 <canvas id="manual-animation" width="200" height="200"></canvas>
-<p>Here is the banana truckin on its own:</p>
+<p>Here's the banana truckin on its own:</p>
 <canvas id="flashing-animation" width="200" height="200"></canvas>
-<p>Except yuck, he's flashing every frame when the canvas clears. If I draw the new frame, THEN clear the canvas, THEN redraw, he'll animate without flashing: <br> <button id="use-functions">Use Functions</button> <button id="use-classes">Use Classes</button></p>
+<p>Except yuck, sometimes he flashes when the canvas clears for a new frame. If I draw the new frame, THEN clear the canvas, THEN redraw, it looks a little bit better. But actually, the way I've written it means the script is loading a png image from the server every frame. No wonder it's laggy. No wonder people use sprite sheets.</p> 
+<p>But let's not get ahead of ourselves. I hadn't figured that loading was the issue yet, so I tried fixing the flashing by superimposing the new frame on the previous frame before clearing both and drawing the new frame again. The refresh loop:</p>
+<pre><code>
+    banana_animation.drawFrame(banana_canvas.ctx, 0, 0, 200); // sprite function draws new frame into the canvas rendering context
+    banana_canvas.ctx.clearRect(0, 0, 200, 200); // clears rendering context (wipes screen)
+    banana_animation.drawFrame(banana_canvas.ctx, 0, 0, 200); // draws frame again
+    banana_animation.nextFrame(); // advances framecounter by 1
+
+</code></pre>
+<p>Yes... that means it's loading the same frame from the server twice. Do you see a difference between the animation above (no overlay) and the one below using this code? Sometimes I do, sometimes I don't.</p>
 <canvas id="not-flashing-animation" width="200" height="200"></canvas>
-<p>2. Made a entity object that possesses sprite animations in <code><a href="script-2-12-25_2.js">script-2-12-25_2.js</a></code> but couldn't figure out how to mirror-flip the image on its way back. I think I need to make a new canvas, new script, and just figure out how to mirror-flip an image of the banana with none of the other stuff going on. But this made me so frustrated I needed to take a break.</p>
+<p>You might notice the animation is sometimes in an orderly loop and sometimes weird! Also, if you scroll the page up and down a little, it starts dropping frames.</p>
+<p>That's because I'd forgotten Javascript <code>classes</code> existed, so I was just writing and using <code>functions</code> as if they were <code>classes</code>. I didn't realize it until things broke in a very weird way (later), but you can see the difference using these buttons to change how the animations in the frame canvas above are handled.</p>
+<p><button id="use-functions">Use Functions</button> <button id="use-classes">Use Classes</button></p>
+<p>The difference between using <code>functions</code> and using <code>classes</code> is that when both animated bananas use the <code>function</code>, it's like they're both sharing food on the same plate, food being their animation frames. When they use a <code>class</code> for their animation, they each have their own plate (aka set of frames). </p>
+<p>I think.</p>
+<p>I was also using <code>var</code> to define variables, instead of <code>const</code> and <code>let</code>, so I got to learn about how <code>var</code>'s wacky scoping was messing me up. Why was I using it? Documentation says it hasn't been the right thing to use since 2015, and I didn't even know Javascript then. I probably picked it up from old examples on StackExchange. </p>
+<p>Things I liked about <code>var</code>:</p> 
+<ul>
+    <li>It never gave me errors</li>
+    <li>I didn't realize it was redefining itself instead of giving me errors</li>
+</ul></p>
+<p>Moving on (still without fixing the <code>functions</code> thing yet)...</p>
+<h3>Flipping the Banana</h3>
+<p>I made a entity object (actually a <code>function</code>) that possesses the animation (messed up because of misusing <code>functions</code>) and a set of coordinates, so now it can animate and move across the screen, and then come back after it goes offscreen. </p>
 <canvas id="crawling-banana" width="500" height="200"></canvas>
-<p>3. FFS I don't know maybe it's impossible to mirror an image from drawImage. The only way I could get it to work was by flipping the canvas itself with <code>scale(-1, 1)</code> and then <code>drawImage()</code>'ing that flipped canvas into the bigger canvas:</p>
+<p>The backstroke is because I couldn't figure out how to mirror-flip the image on its way back. I googled and tried:</p>
+<pre><code>
+    frame = new Image();
+    frame.src = character_path + banana_sprites[0]; 
+    frame.scale(-1, 1); // didn't work
+    drawing.onload = function() {
+        ctx.drawImage(drawing, 0, 0, 200, 200);
+    }
+
+</code></pre>
+<p>And:</p>
+<pre><code>
+    frame = new Image();
+    frame.src = character_path + banana_sprites[0]; 
+    drawing.onload = function() {
+        ctx.drawImage(drawing, 0, 0, -200, 200); // also didn't work
+    }
+
+</code></pre>
+<p>And then I tried those two approaches a bunch more times in different parts of my script because there was too much going on and I didn't understand why the code wasn't working, so it might work if I tried in a different place?? </p>
+<p>I needed to take a step back and make a new page, new canvas, and new script with no distractions, and just focus on getting the banana to flip horizontally. This is where I'm longing for a Javascript 2d game engine that has <code>sprite.flip()</code> or something effortless like that. </p>
+<p>So I worked on flipping the image for another 2+ hours.</p>
+<p>It is in fact, I don't know, maybe impossible to mirror an image itself in <code>&lt;canvas&gt;</code>. The only way I could get it to work was by flipping the canvas rendering context, drawing the image right way around, and then flipping the canvas rendering context back. </p>
 <canvas id="flipped-banana" width="200" height="200"></canvas>
-<p>It's blurry because if I copied and pasted another line of code tonight I would barf.</p>
+<p>The blurriness maybe helps you feel a fraction of my frustration.</p>
+<p>So basically I have a pane of glass (rendering context) and apparently I can only put a sticker (my image) on the surface that's facing me. I can't flip my sticker, but I can flip the pane of glass, put my sticker on, and flip the pane of glass back. Now my sticker is facing the other way.</p>
+<p>And then I place my pane of glass on a bigger pane of glass, because while I could flip a single pane of glass back and forth while I put many stickers on it, that sounds like a huge headache. So one sticker per pane, and then put all those panes on a bigger one.</p>
+<pre><code>
+    drawing1 = new Image();
+    drawing1.src = character_path + banana_sprites[0]; 
+    drawing1.onload = function() {
+        frame_ctx.translate(frame_canvas.width, 0);
+        frame_ctx.scale(-1, 1);
+        frame_ctx.drawImage(drawing1, 0, 0);
+        frame_ctx.setTransform(1, 0, 0, 1, 0, 0); // Resets transformation
 
-<h2>February 13, 2025</h2>
-<p>Ok, if I hadn't gotten stuck trying to flip images I probably would have gotten farther yesterday. </p>
-<p>More fiddling with canvases today. Apparently all the context flipping has to happen in the <code>onload = function() { stuff here } </code> part so I can't flip the rendering context around in the entity handler, I have to do it in the animation handler. Pain in the ass to figure out why it wasn't flipping.</p>
-<p>However here is the banana crawling back and forth, check it out, when you click it changes directions:<br><button id="change-direction">-> Change Direction <- </button> 
+        main_ctx.drawImage(frame_canvas, 0, 0, 200, 200); // draws the whole thing to the main canvas
+    };
+
+</code></pre>
+
+<p>I'm still using <code>functions</code> as makeshift <code>classes</code>. This will be important soon. </p>
+<hr>
+
+
+<h2>Part III - February 13, 2025</h2>
+<p>It was frustrating to have spent so much time getting basic things to work, but at least I had learned my lesson in 2015 and was writing my code to be character-agnostic. So I could swap the banana sprite set for another sprite set, and it would do all the same things. Here is the banana crawling, and mirroring the image when it changes directions:</p>
+<p><button id="change-direction">-> Change Direction <- </button> </p>
 <canvas id="crawling-flippable" width="500" height="200"></canvas>
-<p>and it SHOULD be super easy to make another character who's a baby, but look at the code <code>script-2-13-25_1.js</code> there's something where the animation sets are conflicting with each other even though they're in different variables?? I have no idea. Un-comment <code>drawBaby()</code> in <code>script-2-13-25_1.js</code> to see what I'm talking about... <button id="swap">Add Baby</button>"</p></p>
+<p>And in the canvas below we can use all the same code, just swapping the banana for the baby sprite set. </p>
+<p><button id="swap">Make Baby</button>"</p>
 <canvas id="swap-for-baby" width="500" height="200"></canvas>
-<p>Maybe it's just because I have five different scripts conflicting with each other on this page... but I don't understand why it can't handle two characters.</p>
+<p>And this is where using <code>functions</code> as if they're <code>classes</code> really becomes a problem. When all the animation frames were bananas, the weirdness just showed up like choppy animation. But even though the code for the baby is only targeted at the one canvas directly above this paragraph, the <code>function</code> handling it is letting the baby go on a rampage. Like -- scroll up to the <u>Flipping the Banana</u> section! Scroll up even farther, to where you can swap between functions and classes! The baby is even showing up there (if you have it set to functions)!!?</p>
+<p>At this point I had my first cousin bootcamp check-in, and Tom flagged that <code>var</code> might be causing issues, and that I should read up on <code>var</code>, <code>const</code>, and <code>let</code>, and also functions, arrow functions, and object oriented programming as it applies to javascript. Doing all that helped me figure out that I could use <code>classes</code> to make objects, instead of making <code>functions</code> cosplay as broken objects.</p>
 
-<h2>February 16, 2025</h2>
-<p>Nope, it was because I was so rusty that I'd forgotten classes exist in javascript and was trying to make functions be classes, which is not as effective as just using classes.</p>
-<p>Also I was using <code>var</code> instead of <code>const</code> / <code>let</code> and my scope was getting messed up. </p>
-<p>So I changed my three functions cosplaying as classes into actual classes, and now multiple characters work at one time:<br> <button id="add-baby">-> Add Baby <-</button><button id="flip-babies">-> Flip Babies <-</button></br></p>
+<h2>Part IV - February 16, 2025</h2>
+<p>So I changed the functions cosplaying as classes into actual classes, and now multiple characters work at one time:<br> <button id="add-baby">-> Add Baby <-</button><button id="flip-babies">-> Flip Babies <-</button></br></p>
 <canvas id="many-babies" width="500" height="200"></canvas>
 <p>More or less.</p>
 <p>Adding more babies freezes the babies but only sometimes! Is this because of the animation in progress boolean? Maybe!</p>
