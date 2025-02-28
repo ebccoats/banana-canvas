@@ -20,7 +20,7 @@ class gameCanvas {
 
 // make it so animations complete before the character moves x, y
 class Entity {
-    constructor (x, y, sprites, sprite_width, sprite_height, move_increment) {
+    constructor (x, y, sprites, sprite_width, sprite_height, move_increment, babyNumber) {
         this.animations = [sprites];
         this.currentAnimation = 0;
         this.x = x;
@@ -74,7 +74,11 @@ class Entity {
     get centerX() {
         let centerX = this.x;
         return centerX;
-    } 
+    }
+    
+    debugBaby() {
+        console.log("")
+    }
 
 } 
 
@@ -138,7 +142,8 @@ const baby_gen1 = new Entity(10, 10, baby_animation_1, 40, 40, 20);
 const babies = [baby_gen1];
 
 function addBaby() {
-    let newbaby = new Entity(10, 10, baby_animation_1, 40, 40, 20);
+    let baby_anim = new Animation(baby_imgs_const);
+    let newbaby = new Entity(10, 10, baby_anim, 40, 40, 20);
     babies.push(newbaby);
 }
 

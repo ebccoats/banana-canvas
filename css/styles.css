@@ -30,7 +30,7 @@ pre {
 
 img {
     box-shadow: 4px 4px yellow;
-    border: solid 1px gray; 
+    border: solid 3px black; 
     image-rendering: pixelated;
 }
 

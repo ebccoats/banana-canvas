@@ -145,21 +145,48 @@ ctx.msImageSmoothingEnabled = false; // For IE/Edge support
 <h2>Part IV - February 16, 2025</h2>
 <p>So I changed the functions cosplaying as classes into actual classes, and now multiple characters work at one time:<br> <button id="add-baby">-> Add Baby <-</button><button id="flip-babies">-> Flip Babies <-</button></br></p>
 <canvas id="many-babies" width="500" height="200"></canvas>
-<p>More or less.</p>
-<p>Adding more babies freezes the babies but only sometimes! Is this because of the animation in progress boolean? Maybe!</p>
-<h3>Using A Sprite Sheet</h3>
-<p>All animations so far are sets of <code>png</code> files in an array</p>
+
+<h2>Part V - Switching to Sprite Sheets</h3>
+<p>All the animations up to this point have been sets of <code>pngs</code> in an array:</p>
 <pre><code>
     const baby_sprites_const = ["baby00.png", "baby01.png", "baby02.png", "baby03.png"];
-    var banana_sprites = ["banana00.png", "banana01.png", "banana02.png"];
+    let banana_sprites = ["banana00.png", "banana01.png", "banana02.png", "banana03.png"];
 
 </code></pre>
-<p>But that means the code is loading the image from source every time it wants to draw it, which might have something to do with the image flashing and anyway is inefficient. Since I'm drawing these frames on an invisible canvas that then gets drawn to the main canvas, doing a sprite sheet on that invisible canvas and then just cropping sections to draw to the main canvas should be super straightforward if I write an animation sprite handler. </p>
+<p>But this approach means I'm querying the server every time I want to draw a frame, and even though each <code>png</code> in the set is only forty pixels wide, the server query adds latency (which makes the animation blink in weird ways sometimes). </p>
+<p>I've been calling the animations in my code "sprites", but real sprites come from sprite sheets, which are image files with every frame of animation evenly lined up like this: </p>
 <img src="images/baby-sprites.png" height="150" >
+<p>Instead of loading each frame from its own file, the sprite-handling code loads the sprite sheet, maps the coordinates of each frame and then clips what it needs out of the already-loaded sheet. An interesting thing about sprite sheets is that to be extra economical, you make sure every frame is unique, and then you mix and match them to create the animations.</p>
+<pre><code>
+    baby_sprite_2 = new SpriteHandler(baby_sprite_source, 29, 24);
 
-<h2>February 18, 2025</h2>
-<p>Ok, wrote a sprite handler! But it's not working when I move it over to this log page from the working page I was in. It says ctx is undefined. <br> <button id="sprite-manual-next-frame">Next Frame</button> <button id="baby-to-banana">Baby / Banana</button></p>
-<canvas id="sprite-manual-animation" height="200" width="500"></canvas>
+    class SpriteHandler {
+    constructor(image_path, frame_width, frame_height) {
+        this.sprite_coordinates = [];
+        this.canvases = {};
+        this.contexts = {};
+        this.info = {
+            path: image_path,
+            width: frame_width,
+            height: frame_height
+        }
+        this.loadImage(image_path);
+    }
+    // this.loadImage(image_path) creates OffscreenCanvases 
+    // for the sprite sheet and the current frame, calculates
+    // how many frames to pull (based on frame_width), and
+    // makes each frame's x, y coordinates accessible in 
+    // this.sprite_coordinates.
+
+</pre></code>
+<p>Use these buttons to cycle through all the frames of the baby OR the banana: <br> <button id="sprite-manual-prev-frame">Prev Frame</button> <button id="sprite-manual-next-frame">Next Frame</button> <button id="baby-to-banana">Baby / Banana</button></p>
+<canvas id="sprite-manual-animation" height="150" width="150"></canvas>
+<p>And here are the animations running on their own:</p>
+<canvas id="animation-1" height="150", width="150"></canvas>
+<canvas id="animation-2" height="150", width="150"></canvas>
+<canvas id="animation-3" height="150", width="150"></canvas>
+
+
 </body>
 
 </html>
