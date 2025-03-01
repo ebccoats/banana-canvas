@@ -23,6 +23,7 @@ const baby_fall = {
 const baby_sit_idle = {
     title: "baby_sit_idle",
     frames: [7, 8, 7, 9, 8],
+  //  frames: [7, 5, 4, 5, 6, 7, 8, 7],
     timing: [1, 1, 1, 1, 1],
     move: false,
     loop: false,
@@ -159,16 +160,20 @@ class SpriteHandler {
         // PROBLEM TROUBLESHOOT here why is it not working???
         console.log("chosen frame: ", chosen_frame, "coordinates for chosen frame: ", this.sprite_coordinates[chosen_frame]);
         const frame = this.sprite_coordinates[chosen_frame];
+        // if (!frame) {
+        //     debugger;
+        // }
 
         let frame_ctx = this.contexts.singleFrame;
         frame_ctx.clearRect(0, 0, this.canvases.singleFrame.width, this.canvases.singleFrame.height);
 
         if (!flipped) {
-            frame_ctx.drawImage(this.canvases.fullSheet, frame.x, frame.y, this.info.width, this.info.height, 0, 0, this.info.width, this.info.height);
+            console.log({frame});
+            frame_ctx.drawImage(this.canvases.fullSheet, frame?.x, frame?.y, this.info.width, this.info.height, 0, 0, this.info.width, this.info.height);
         } else {
             frame_ctx.translate(this.canvases.singleFrame.width, 0);
             frame_ctx.scale(-1, 1);
-            frame_ctx.drawImage(this.canvases.fullSheet, frame.x, frame.y, this.info.width, this.info.height, 0, 0, this.info.width, this.info.height);
+            frame_ctx.drawImage(this.canvases.fullSheet, frame?.x, frame?.y, this.info.width, this.info.height, 0, 0, this.info.width, this.info.height);
             frame_ctx.setTransform(1, 0, 0, 1, 0, 0);
         }
         return this.canvases.singleFrame;
@@ -176,7 +181,20 @@ class SpriteHandler {
 
     // Returns animation's current frame
     makeAnimFrame(flipped) {
+        const frame_index = this.currentFrame;
+        const desired_sprite_clipout_index = this.currentAnimation.frames[frame_index];
+        const desired_sprite_clipout_coordinates = this.sprite_coordinates[desired_sprite_clipout_index];
+        // const debugObject = {
+        //     "frame_index": frame_index,
+        //     "desired_sprite_clipout_index": 
+        // }
+        console.log({
+            "this.currentFrame": this.currentFrame, // 7 should be 0
+        })
+
+        // debugger;
         const animFrame = this.makeFrame(this.currentAnimation.frames[this.currentFrame], flipped);
+
         return animFrame;
     }
 
@@ -193,7 +211,7 @@ class SpriteHandler {
     setAnimation(animation) {
         const selected_anim = animation;
         this.currentAnimation = this.animations[selected_anim];
-        this.currentFrame = this.currentAnimation.frames[0];
+        this.currentFrame = 0;
         this.animFinished = false;
     }
 
@@ -406,12 +424,12 @@ function draw_sprite_animations() {
 
 function setup_sprite_animations_canvases() {
     anim_1_baby.setTargetCtx(animation_1_ctx);
-    anim_1_baby.setAnim("walk");
+    anim_1_baby.setAnim("eat_banana");
     anim_2_baby.setTargetCtx(animation_2_ctx);
-    anim_2_baby.setAnim("fall");
+    anim_2_baby.setAnim("sit_hold");
     anim_3_baby.setTargetCtx(animation_3_ctx);
     // TROUBLESHOOTING: all the animations except baby_walk and baby_fall are broken??? 
-    anim_3_baby.setAnim("walk");
+    anim_3_baby.setAnim("sit_idle");
     const sprite_babies = [anim_1_baby, anim_2_baby, anim_3_baby];
     for (baby of sprite_babies) {
         baby.placeFrame();
