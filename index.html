@@ -10,6 +10,7 @@
     <script src="scripts/script-2-13-25_1.js" async></script>
     <script src="scripts/script-2-16-25_1.js" async></script>
     <script src="scripts/script-2-18-25_1.js" async></script>
+    <script src="scripts/script-3-25-25.js" async></script>
 
     <link rel="stylesheet" type="text/css" href="css/styles.css" />
 
@@ -21,7 +22,7 @@
 
 <h1>Animating a Banana in HTML Canvas</h1>
 
-<h2>Part I - February 10, 2025</h2>
+<h2>Part I - Making Anything Happen At All</h2>
 <pre>
 <code class="language-js">
 I was living in New York and inspired by my environment... 
@@ -50,7 +51,7 @@ ctx.msImageSmoothingEnabled = false; // For IE/Edge support
 </canvas>
 <hr>
 
-<h2>Part II - February 12, 2025</h2>
+<h2>Part II - Why Is This So Hard</h2>
 <p>I can't rest on my laurels.</p>
 <p>There are javascript game engines out there that would make this a lot faster and easier. But this is all about learning how basic elements work, and learning how <code>&lt;canvas&gt;</code> works, specifically. Before starting this, I didn't realize that all those engines and libraries are built on top of the <code>&lt;canvas&gt;</code> element. So that's cool, I'm learning. And I know enough Javascript to puzzle this out!</p>
 
@@ -132,17 +133,18 @@ ctx.msImageSmoothingEnabled = false; // For IE/Edge support
 <hr>
 
 
-<h2>Part III - February 13, 2025</h2>
+<h2>Part III - Bad Approaches</h2>
 <p>It was frustrating to have spent so much time getting basic things to work, but at least I had learned my lesson in 2015 and was writing my code to be character-agnostic. So I could swap the banana sprite set for another sprite set, and it would do all the same things. Here is the banana crawling, and mirroring the image when it changes directions:</p>
+(!!! why is the animation going backwards??? !!!)
 <p><button id="change-direction">-> Change Direction <- </button> </p>
 <canvas id="crawling-flippable" width="500" height="200"></canvas>
 <p>And in the canvas below we can use all the same code, just swapping the banana for the baby sprite set. </p>
 <p><button id="swap">Make Baby</button>"</p>
 <canvas id="swap-for-baby" width="500" height="200"></canvas>
-<p>And this is where using <code>functions</code> as if they're <code>classes</code> really becomes a problem. When all the animation frames were bananas, the weirdness just showed up like choppy animation. But even though the code for the baby is only targeted at the one canvas directly above this paragraph, the <code>function</code> handling it is letting the baby go on a rampage. Like -- scroll up to the <u>Flipping the Banana</u> section! Scroll up even farther, to where you can swap between functions and classes! The baby is even showing up there (if you have it set to functions)!!?</p>
+<p>Except... this is where using <code>functions</code> as if they're <code>classes</code> really becomes a problem. When all the animation frames were bananas, the weirdness just showed up like choppy animation. But even though the code for the baby is only targeted at the one canvas directly above this paragraph, the <code>function</code> handling it is letting the baby go on a rampage. Like -- scroll up to the <u>Flipping the Banana</u> section! Scroll up even farther, to where you can swap between functions and classes! The baby is even showing up there (if you have it set to functions)!!?</p>
 <p>At this point I had my first cousin bootcamp check-in, and Tom flagged that <code>var</code> might be causing issues, and that I should read up on <code>var</code>, <code>const</code>, and <code>let</code>, and also functions, arrow functions, and object oriented programming as it applies to javascript. Doing all that helped me figure out that I could use <code>classes</code> to make objects, instead of making <code>functions</code> cosplay as broken objects.</p>
 
-<h2>Part IV - February 16, 2025</h2>
+<h2>Part IV - Better Approach</h2>
 <p>So I changed the functions cosplaying as classes into actual classes, and now multiple characters work at one time:<br> <button id="add-baby">-> Add Baby <-</button><button id="flip-babies">-> Flip Babies <-</button></br></p>
 <canvas id="many-babies" width="500" height="200"></canvas>
 
@@ -156,7 +158,9 @@ ctx.msImageSmoothingEnabled = false; // For IE/Edge support
 <p>But this approach means I'm querying the server every time I want to draw a frame, and even though each <code>png</code> in the set is only forty pixels wide, the server query adds latency (which makes the animation blink in weird ways sometimes). </p>
 <p>I've been calling the animations in my code "sprites", but real sprites come from sprite sheets, which are image files with every frame of animation evenly lined up like this: </p>
 <img src="images/baby-sprites.png" height="150" >
-<p>Instead of loading each frame from its own file, the sprite-handling code loads the sprite sheet, maps the coordinates of each frame and then clips what it needs out of the already-loaded sheet. An interesting thing about sprite sheets is that to be extra economical, you make sure every frame is unique, and then you mix and match them to create the animations.</p>
+<p>Instead of loading each frame from its own file, the sprite-handling code loads the sprite sheet from the server once, maps out the coordinates of each frame and then clips what it needs out of the already-loaded sheet. </p>
+<p>An interesting thing about sprite sheets is that to be extra economical, you make sure every frame is unique, and then you mix and match them to create your animations. So the animation of the baby getting up goes [8, 10, 4, 5, 4] (!!!add image set below!!!) </p>
+
 <pre><code>
     baby_sprite_2 = new SpriteHandler(baby_sprite_source, 29, 24);
 
@@ -185,15 +189,47 @@ ctx.msImageSmoothingEnabled = false; // For IE/Edge support
 <canvas id="animation-1" height="150", width="150"></canvas>
 <canvas id="animation-2" height="150", width="150"></canvas>
 <canvas id="animation-3" height="150", width="150"></canvas>
+<p>Victory! I'm close to the finish line!</p>
+<p> My next step is clear: </p>
 
-<h2>Part VI - It All Comes Together</h2>
-<p>Some stuff
+
+<h2>Part VI - Stall Out</h2>
+<p>I stop working on it for 3 weeks.</p>
+<p>This project began with an approach that made sense to me. When I'm writing something, I start with words. When I'm doing a visual project, I start with images. This game is visual, so my way in to this project was getting an image to appear, getting the image to animate, etc. Making a banana flop around the screen is way more interesting than making a red square obey game logic.</p>
+<p>With all the visuals working, it's time to hook up player input, character behaviors, and game logic, and now this sprite-first approach creates a problem, because figuring out how to fit those new things in with the stuff that's already working (without breaking anything) is making my brain melt out my ears. </p>
+<p>This is how I want it to work at this point: (!!!insert Excalidraw diagram here!!!)</p>
+<p>But whenever I think about sitting down to work on this thing, the first step has to be "figure out what the hell is going on already and how to change it" and that involves diagramming out my classes and their functions to see how to break things up, which is just overwhelming and demoralizing. What should the behavior handle? When the player presses the left arrow, should the input handler tell the sprite, the character, or the game logic to move the banana? All the work to wrap my head around what I've already done feels like one step forward, two steps back. On top of that, I don't want to break any of the wacky stuff on the page that I'm using as examples. </p>
+<p>The next time Tom and I meet, he points out that starting from the sprite handler is not the way most people would approach making a game, and that maybe I should make a new file and try coding the game the usual way: start with a game controller and copy over the stuff that works as I need it. Starting clean will most likely get me unstuck.</p>
+
+<p>Here's what game controller structure looks like: (!!!excalidraw/mermaid diagram!!!)</p>
+
+<p>Here's the game in action:</p>
+<p>(!!! Fix layout of these buttons!!!)
     <br><button id="up">Up</button>
     <br><button id="left">Left</button><button id="right">Right</button>
     <br><button id="down">Down</button>
 </p>
 
 <canvas id="user_controlled" width="500" height="200"></canvas>
+<p>Redoing it from a clean file, starting from the opposite approach, is great practice. While working on this thing I've learned about arrow functions, why not to ever use var and what const and let do, and that I don't need to treat everything like an object. If a thing is unique and there will never be multiples of it, it doesn't have to be an object. Starting from scratch lets me write it using what I know now, instead of working around all the problems I created by not knowing what I was doing.</p>
+<p>I feel accomplished, and you can play the little contained version of my banana game.</p>
+
+<p>This should be the end of the project, Except "start with the game controller" wasn't the only suggestion from Tom.</p>
+
+<h2>PART VI - Try A Weirder Way</h2>
+<p>Tom said I should definitely do the game controller version first, but afterwards, if I still had interest in it, it could be interesting to try doing a version that's game controller-less, where nothing is in charge and the characters are autonomous little dudes wandering around the screen doing their own thing.</p>
+<p>The game above plays the same as the game controller version, but here's how it's structured: (!!! insert excalidraw/mermaid diagram!!!)</p>
+<p>The characters check in with each other instead of taking orders from the game controller. The "game over" banner is spawned by the baby when it finishes its "catch the banana" behavior.</p>
+<p>In a game controller structure, the game controller owns the background and all the character locations. If the background scrolls sideways, the game controller makes sure all the characters stay mapped to the background. But in this autonomous approach, you'd make the background its own entity, and when the player character gets to the edge of the screen, the character asks the background to scroll, and the background would tell everybody in the scene "guys, we're scrolling" and everybody adjusts their coordinates accordingly. </p>
+
+<h2>Part VII - Conclusion</h2>
+<p>My coding skills were rusty when I started this project, and they're still not the greatest. Everything you see on this page took me about 10 sessions over a month and a half. </p>
+<p>The first time I made my banana game in 2015, I painted myself into a corner because I didn't know how to write code that was flexible enough to use in multiple levels. This time around, I wanted to write the game in a way that would be easy to add more characters and levels to it. </p>
+<p>Coding can be really, really, really frustrating. But getting to the point where your code works and scales is exhiliarating. Check it out:</p>
+<p>The first 6 parts of this page, getting just baby and banana working, took [!!! x hours !!!]. </p>
+<p>But the baby is the most complicated character in the original level. Most characters don't need to track or follow the banana, and even the one who does, the janitor, is essentially just a bigger baby. The mom spawns the baby when she finishes her "fall down" behavior the same way the baby and janitor spawn the Game Over banner when they finish their "catch banana" behavior. Getting the entire first level of the game from 2015 to work only took another [!!! x hours !!!]. Like how is that possible!?? It's frankly bananas. </p>
+<p>Full level below:</p>
+(!!! add canvas here !!!)
 </body>
 
 </html>

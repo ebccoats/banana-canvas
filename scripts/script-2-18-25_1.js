@@ -158,7 +158,7 @@ class SpriteHandler {
     // Returns whatever frame in the sprite you asked for.
     makeFrame(chosen_frame, flipped) {
         // PROBLEM TROUBLESHOOT here why is it not working???
-        console.log("chosen frame: ", chosen_frame, "coordinates for chosen frame: ", this.sprite_coordinates[chosen_frame]);
+        // console.log("chosen frame: ", chosen_frame, "coordinates for chosen frame: ", this.sprite_coordinates[chosen_frame]);
         const frame = this.sprite_coordinates[chosen_frame];
         // if (!frame) {
         //     debugger;
@@ -168,7 +168,7 @@ class SpriteHandler {
         frame_ctx.clearRect(0, 0, this.canvases.singleFrame.width, this.canvases.singleFrame.height);
 
         if (!flipped) {
-            console.log({frame});
+            // console.log({frame});
             frame_ctx.drawImage(this.canvases.fullSheet, frame?.x, frame?.y, this.info.width, this.info.height, 0, 0, this.info.width, this.info.height);
         } else {
             frame_ctx.translate(this.canvases.singleFrame.width, 0);
@@ -188,9 +188,9 @@ class SpriteHandler {
         //     "frame_index": frame_index,
         //     "desired_sprite_clipout_index": 
         // }
-        console.log({
-            "this.currentFrame": this.currentFrame, // 7 should be 0
-        })
+        // console.log({
+        //    "this.currentFrame": this.currentFrame, // 7 should be 0
+        // })
 
         // debugger;
         const animFrame = this.makeFrame(this.currentAnimation.frames[this.currentFrame], flipped);
@@ -224,7 +224,6 @@ class SpriteHandler {
             looping = true; // CHANGE THIS WHEN YOU FIGURE SOMETHING ELSE OUT
         }
         const currentFrame = this.currentFrame;
-        console.log("current anim: ", this.currentAnimation, "current frame: ", currentFrame);
         if (currentFrame == (anim_length - 1)) {
             this.currentFrame = 0;
         } else {
@@ -253,7 +252,6 @@ let counter = 0;
 function drawFirstFrame() {
 
     sprite_clicker_drawFrame();
-    console.log(baby_sprite_2.animations)
 }
 
 function swapSpriteSet() {
@@ -306,6 +304,7 @@ class CharacterEntity {
         this.is_autonomous = is_autonomous;
         this.x = spawn_x,
         this.y = spawn_y,
+        this.y_level = 1
         this.facingLeft = false;
         this.hitbox = [this.x, (this.x + frame_width)];
         this.currentAnimation = "walk";
@@ -315,6 +314,23 @@ class CharacterEntity {
         this.target_ctx;
 
 
+    }
+
+    moveY(direction) {
+        if (direction == "up") {
+            if (this.y_level == 1) {
+                return;
+            } else {
+                this.y_level = this.y_level - 1;
+            }
+        } else if (direction == "down") {
+            if (this.y_level == 3) {
+                return;
+            } else {
+                this.y_level++;
+            }
+        }
+        console.log("y level:", this.y_level);
     }
 
     setTargetCtx(target_ctx) {
@@ -401,7 +417,7 @@ const banana_sprite_3 = new SpriteHandler(banana_sprite_source, 20, 13, "banana"
 const anim_1_baby = new CharacterEntity("baby", 29, 24, 5, baby_sprite_source, true, 0, 0);
 const anim_2_baby = new CharacterEntity("baby", 29, 24, 5, baby_sprite_source, true, 0, 0); 
 const anim_3_baby = new CharacterEntity("baby", 29, 24, 5, baby_sprite_source, true, 0, 0);
-
+console.log({anim_1_baby});
 
 // 3-panel animation functions
 function draw_sprite_animations() {
@@ -422,6 +438,17 @@ function draw_sprite_animations() {
 
 }
 
+function setup_final() {
+    setup_sprite_animations_canvases();
+    draw_user_controlled_canvas();
+}
+
+function draw_final() {
+
+    draw_sprite_animations();
+    draw_user_controlled_canvas();
+}
+
 function setup_sprite_animations_canvases() {
     anim_1_baby.setTargetCtx(animation_1_ctx);
     anim_1_baby.setAnim("eat_banana");
@@ -438,43 +465,87 @@ function setup_sprite_animations_canvases() {
 }
 
 // 3-panel animation listeners
-window.addEventListener("load", setup_sprite_animations_canvases);
-window.setInterval(draw_sprite_animations, 300);
+window.addEventListener("load", setup_final);
+window.setInterval(draw_final, 300);
 
-const up_button = document.getElementById("up");
-const down_button = document.getElementById("down");
-const left_button = document.getElementById("left");
-const right_button = document.getElementById("right");
-up_button.addEventListener("click", moveUp);
-down_button.addEventListener("click", moveDown);
-left_button.addEventListener("click", moveLeft);
-right_button.addEventListener("click", moveRight);
 
-// TODO add keyboard arrow keys handling, intercept them so they don't scroll the browser window?
-document.addEventListener('keydown', function(event) {
-    if (event.key == "ArrowUp") {
-        moveUp();
-    } else if (event.key == "ArrowDown") {
-        moveDown();
-    } else if (event.key == "ArrowLeft") {
-        moveLeft();
-    } else if (event.key == "ArrowRight") {
-        moveRight();
+
+// Give it the player character as an object? 
+class UserInputHandler {
+    constructor(buttonUpId, buttonDownId, buttonLeftId, buttonRightId) {
+        this.target = "banana"; //placeholder
+        const up_button = document.getElementById(buttonUpId);
+        const down_button = document.getElementById(buttonDownId);
+        const left_button = document.getElementById(buttonLeftId);
+        const right_button = document.getElementById(buttonRightId);
+        up_button.addEventListener("click", () => this.upInput());
+        down_button.addEventListener("click", () =>  this.downInput());
+        left_button.addEventListener("click", () => this.leftInput());
+        right_button.addEventListener("click", () => this.rightInput());
+        document.addEventListener('keydown', (event) => {
+            if (event.key == "ArrowUp") {
+                event.preventDefault();
+                this.upInput();
+            } else if (event.key == "ArrowDown") {
+                event.preventDefault();
+                this.downInput();
+            } else if (event.key == "ArrowLeft") {
+                event.preventDefault();
+                this.leftInput();
+            } else if (event.key == "ArrowRight") {
+                event.preventDefault();
+                this.rightInput();
+            }
+        });
     }
-});
 
-function moveUp() {
-    console.log("move up");
+    upInput() {
+        console.log("up");
+        this.target.moveUp();
+    }
+
+    downInput() {
+        console.log("down");
+        this.target.moveDown();
+    }
+
+    leftInput() {
+        console.log("left");
+        this.target.face("left");
+        this.target.moveX();
+        this.target.setAnim("walk");
+    }    
+    
+    rightInput() {
+        console.log("right");
+        this.target.face("right");
+        this.target.moveX();
+        this.target.setAnim("walk");
+    }
 }
 
-function moveDown() {
-    console.log("move down");
+
+
+const inputHandler = new UserInputHandler("up", "down", "left", "right");
+
+const user_controlled_canvas = document.getElementById("user_controlled");
+let user_controlled_canvas_ctx = user_controlled_canvas.getContext("2d");
+user_controlled_canvas_ctx.imageSmoothingEnabled = false;
+
+const user_controlled_banana = new CharacterEntity("banana", 20, 13, 5, banana_sprite_source, true, 0, 0);
+console.log({user_controlled_banana});
+user_controlled_banana.setTargetCtx(user_controlled_canvas_ctx);
+user_controlled_banana.setAnim("sit_hold"); 
+inputHandler.target = user_controlled_banana;
+
+
+function draw_user_controlled_canvas() {
+    user_controlled_canvas_ctx.clearRect(0, 0, 500, 200);
+    user_controlled_banana.placeFrame();
+   
 }
 
-function moveLeft() {
-    console.log("move left");
-}
 
-function moveRight() {
-    console.log("move right");
-}
+// TODO
+// animation needs to be triggered by user and refresh with each draw cycle
+// Untangle what each part is handling
