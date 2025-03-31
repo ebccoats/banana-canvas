@@ -1,0 +1,29 @@
+<html lang="en-US">
+<head>
+    <meta charset="utf-8" />
+    <title>Banana Thing</title>
+    
+  
+    <script src="scripts/script-3-31-25.js" async></script>
+
+    <link rel="stylesheet" type="text/css" href="css/styles.css" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&family=Special+Elite:wght@400..700&family=VT323&family=Lacquer&family=Walter+Turncoat&display=swap" rel="stylesheet">
+</head>
+<body>
+<canvas id="translate-field" width="500" height="200"></canvas>
+<canvas id="short-field" width="20" height="30"></canvas>
+<canvas id="tall-field" width="20" height="67"></canvas>
+<p>Steps:</p>
+<ul>
+    <li>Make the two canvases different colors</li>
+    <li>Add the two canvases to main canvas</li>
+    <li>Figure out what context to do transform/translate on</li>
+</ul>
+<p>Findings:</p>
+<li>translate main canvas by <code>x, tallCanvas.height - shortCanvas.height </code> before draiwng shortCanvas puts it on the same floor plane as tallCanvas</li>
+</body>
+
+</html>

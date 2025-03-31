@@ -1,5 +1,5 @@
 const scale = 5;
-const y_planes = [40, 50, 60];
+const y_planes = [150, 175, 200];
 const y_modifier = 11;
 
 const animations = {
@@ -66,6 +66,7 @@ const sprite_sets = {
         sprite_sheet_path: "images/banana-sprites.png",
         frame_width: 20,
         frame_height: 13,
+        floor_plane: 5,
         animations: {
             "walk": animations.banana_crawl,
             "sit_hold": animations.banana_hold
@@ -76,6 +77,7 @@ const sprite_sets = {
         sprite_sheet_path: "images/baby-sprites.png",
         frame_width: 29,
         frame_height: 24,
+        floor_plane: 5,
         animations: {
             "walk": animations.baby_walk,
             "fall": animations.baby_fall,
@@ -125,7 +127,6 @@ class SpriteHandler {
         this.canvases.fullSheet = new OffscreenCanvas(sprite_sheet.width, sprite_sheet.height);
         this.contexts.fullSheet = this.canvases.fullSheet.getContext("2d");
         this.contexts.fullSheet.drawImage(sprite_sheet, 0, 0);
-
         this.canvases.singleFrame = new OffscreenCanvas(this.sprite_info.frame_width, this.sprite_info.frame_height);
         this.contexts.singleFrame = this.canvases.singleFrame.getContext("2d");
         console.log("singleFrame", this.contexts.singleFrame)
@@ -158,8 +159,9 @@ class SpriteHandler {
         const frame_index = this.currentFrame;
         const desired_sprite_clipout_index = this.currentAnimation.frames[frame_index];
         const desired_sprite_clipout_coordinates = this.sprite_coordinates[desired_sprite_clipout_index];
-
+        
         const animFrame = this.makeFrame(this.currentAnimation.frames[this.currentFrame], flipped);
+
         return animFrame;
     }
 
@@ -182,7 +184,7 @@ class SpriteHandler {
 
 }
 
-// TODO: do I need to do callbacks or something? 
+
 class GameCharacter {
     constructor(sprite_set, movement_rate, ctx) {
         this.takingInput = true;
@@ -232,18 +234,24 @@ class GameCharacter {
 
     }
 
+
     drawFrame = () => {
         this.frame = this.sprite_handler.makeAnimFrame(this.facingLeft);
         this.sprite_handler.advanceFrame();
         console.log("animation in progress", this.sprite_handler.animInProgress);
-        this.targetCtx.drawImage(this.frame, this.x, this.y, this.frame.width * scale, this.frame.height * scale);
+
+        this.targetCtx.translate(0, (y_planes[this.y_level] - (this.sprite_handler.canvases.singleFrame.height * scale))); //transform/translate gets character on the right plane no matter how tall their sprite is
+        this.targetCtx.drawImage(this.frame, this.x, 0, this.frame.width * scale, this.frame.height * scale);
+        this.targetCtx.setTransform(1, 0, 0, 1, 0, 0); //resets transform
+
+        console.log("character:", this.sprite_info.title, this.x, this.y);
 
     }
 
     forcePlace = (x, y) => {
         this.x = x;
         this.y_level = y;
-        this.y = y_planes[this.y_level] - (this.sprite_info.frame_height)
+        this.y = 0;
     }
 
     location = () => {
@@ -256,14 +264,12 @@ class GameCharacter {
                 return;
             } else {
                 this.y_level = this.y_level - 1;
-                this.y = y_planes[this.y_level] - this.sprite_info.frame_height;
             }
         } else if (direction == "down") {
             if (this.y_level == 2) {
                 return;
             } else {
                 this.y_level++;
-                this.y = y_planes[this.y_level] - this.sprite_info.frame_height;
             }
         }
     }
@@ -407,7 +413,7 @@ function gameController() {
         characters.baby = new GameCharacter(sprite_sets.baby, 10, gameField.ctx);
         characters.baby.forcePlace(100, 0);
         characters.banana = new GameCharacter(sprite_sets.banana, 5, gameField.ctx);
-        characters.banana.forcePlace(400, 2);
+        characters.banana.forcePlace(400, 0);
         gameState.playerCharacter = characters.banana; 
 
 
