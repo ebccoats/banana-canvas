@@ -440,13 +440,12 @@ function draw_sprite_animations() {
 
 function setup_final() {
     setup_sprite_animations_canvases();
-    draw_user_controlled_canvas();
+   
 }
 
 function draw_final() {
 
     draw_sprite_animations();
-    draw_user_controlled_canvas();
 }
 
 function setup_sprite_animations_canvases() {
@@ -471,79 +470,79 @@ window.setInterval(draw_final, 300);
 
 
 // Give it the player character as an object? 
-class UserInputHandler {
-    constructor(buttonUpId, buttonDownId, buttonLeftId, buttonRightId) {
-        this.target = "banana"; //placeholder
-        const up_button = document.getElementById(buttonUpId);
-        const down_button = document.getElementById(buttonDownId);
-        const left_button = document.getElementById(buttonLeftId);
-        const right_button = document.getElementById(buttonRightId);
-        up_button.addEventListener("click", () => this.upInput());
-        down_button.addEventListener("click", () =>  this.downInput());
-        left_button.addEventListener("click", () => this.leftInput());
-        right_button.addEventListener("click", () => this.rightInput());
-        document.addEventListener('keydown', (event) => {
-            if (event.key == "ArrowUp") {
-                event.preventDefault();
-                this.upInput();
-            } else if (event.key == "ArrowDown") {
-                event.preventDefault();
-                this.downInput();
-            } else if (event.key == "ArrowLeft") {
-                event.preventDefault();
-                this.leftInput();
-            } else if (event.key == "ArrowRight") {
-                event.preventDefault();
-                this.rightInput();
-            }
-        });
-    }
+// class UserInputHandler {
+//     constructor(buttonUpId, buttonDownId, buttonLeftId, buttonRightId) {
+//         this.target = "banana"; //placeholder
+//         const up_button = document.getElementById(buttonUpId);
+//         const down_button = document.getElementById(buttonDownId);
+//         const left_button = document.getElementById(buttonLeftId);
+//         const right_button = document.getElementById(buttonRightId);
+//         up_button.addEventListener("click", () => this.upInput());
+//         down_button.addEventListener("click", () =>  this.downInput());
+//         left_button.addEventListener("click", () => this.leftInput());
+//         right_button.addEventListener("click", () => this.rightInput());
+//         document.addEventListener('keydown', (event) => {
+//             if (event.key == "ArrowUp") {
+//                 event.preventDefault();
+//                 this.upInput();
+//             } else if (event.key == "ArrowDown") {
+//                 event.preventDefault();
+//                 this.downInput();
+//             } else if (event.key == "ArrowLeft") {
+//                 event.preventDefault();
+//                 this.leftInput();
+//             } else if (event.key == "ArrowRight") {
+//                 event.preventDefault();
+//                 this.rightInput();
+//             }
+//         });
+//     }
 
-    upInput() {
-        console.log("up");
-        this.target.moveUp();
-    }
+//     upInput() {
+//         console.log("up");
+//         this.target.moveUp();
+//     }
 
-    downInput() {
-        console.log("down");
-        this.target.moveDown();
-    }
+//     downInput() {
+//         console.log("down");
+//         this.target.moveDown();
+//     }
 
-    leftInput() {
-        console.log("left");
-        this.target.face("left");
-        this.target.moveX();
-        this.target.setAnim("walk");
-    }    
+//     leftInput() {
+//         console.log("left");
+//         this.target.face("left");
+//         this.target.moveX();
+//         this.target.setAnim("walk");
+//     }    
     
-    rightInput() {
-        console.log("right");
-        this.target.face("right");
-        this.target.moveX();
-        this.target.setAnim("walk");
-    }
-}
+//     rightInput() {
+//         console.log("right");
+//         this.target.face("right");
+//         this.target.moveX();
+//         this.target.setAnim("walk");
+//     }
+// }
 
 
 
-const inputHandler = new UserInputHandler("up", "down", "left", "right");
+// const inputHandler = new UserInputHandler("up", "down", "left", "right");
 
-const user_controlled_canvas = document.getElementById("user_controlled");
-let user_controlled_canvas_ctx = user_controlled_canvas.getContext("2d");
-user_controlled_canvas_ctx.imageSmoothingEnabled = false;
+// const user_controlled_canvas = document.getElementById("user_controlled");
+// let user_controlled_canvas_ctx = user_controlled_canvas.getContext("2d");
+// user_controlled_canvas_ctx.imageSmoothingEnabled = false;
 
-const user_controlled_banana = new CharacterEntity("banana", 20, 13, 5, banana_sprite_source, true, 0, 0);
-console.log({user_controlled_banana});
-user_controlled_banana.setTargetCtx(user_controlled_canvas_ctx);
-user_controlled_banana.setAnim("sit_hold"); 
-inputHandler.target = user_controlled_banana;
+// const user_controlled_banana = new CharacterEntity("banana", 20, 13, 5, banana_sprite_source, true, 0, 0);
+// console.log({user_controlled_banana});
+// user_controlled_banana.setTargetCtx(user_controlled_canvas_ctx);
+// user_controlled_banana.setAnim("sit_hold"); 
+// inputHandler.target = user_controlled_banana;
 
 
-function draw_user_controlled_canvas() {
-    user_controlled_canvas_ctx.clearRect(0, 0, 500, 200);
-    user_controlled_banana.placeFrame();
+// function draw_user_controlled_canvas() {
+//     user_controlled_canvas_ctx.clearRect(0, 0, 500, 200);
+//     user_controlled_banana.placeFrame();
    
-}
+// }
 
 
 // TODO

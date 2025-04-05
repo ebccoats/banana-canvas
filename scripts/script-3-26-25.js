@@ -90,7 +90,7 @@ const sprite_sets = {
     }
 }
 
-class SpriteHandler {
+class SpriteHandlerr {
     constructor(sprite_set) {
         this.sprite_info = sprite_set;
         this.canvases = {};
@@ -216,7 +216,7 @@ class GameCharacter {
     }
 
     setup = () => {
-        this.sprite_handler = new SpriteHandler(this.sprite_info);
+        this.sprite_handler = new SpriteHandlerr(this.sprite_info);
         this.sprite_handler.setAnimation(this.sprite_info.animations["walk"]);
 
     }
@@ -530,6 +530,23 @@ function gameController() {
         }
 
     }
+
+    const start_button = document.getElementById("start-button");
+    const up_button = document.getElementById("up");
+    const down_button = document.getElementById("down");
+    const left_button = document.getElementById("left");
+    const right_button = document.getElementById("right");
+    start_button.addEventListener("click", () => setup())
+    up_button.addEventListener("click", () => gameState.playerCharacter.moveY("up"));
+    down_button.addEventListener("click", () =>  gameState.playerCharacter.moveY("down"));
+    left_button.addEventListener("click", () => {
+        gameState.playerCharacter.face("left");
+        gameState.playerCharacter.walk(); 
+    });
+    right_button.addEventListener("click", () => {
+        gameState.playerCharacter.face("right");
+        gameState.playerCharacter.walk();
+    });
 
     const fps = 6;
     let gameInterval = setInterval(gameLoop, 1000 / fps);

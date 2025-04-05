@@ -50,6 +50,7 @@ button {
   user-select: none;
   -webkit-user-select: none;
   touch-action: manipulation;
+  width: fit-content;
 }
 
 button:active {
@@ -62,4 +63,12 @@ button:active {
   button {
     padding: 0.25em 0.75em;
   }
+}
+
+.button-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: fit-content;
 }
