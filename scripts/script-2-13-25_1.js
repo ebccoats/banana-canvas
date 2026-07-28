@@ -126,7 +126,7 @@ function animationMaker(sprite_set) {
 var banana_animation_13 = new animationMaker(banana_sprites_13, "placeholder"); 
 var baby_animation = new animationMaker(baby_sprites, "placeholder"); 
 var banana_13 = new entityMaker(0, 0, banana_animation_13, 40, 40, 30);
-var baby = new entityMaker(0, 0, baby_animation, 40, 40, 20);
+var baby_dupe = new entityMaker(0, 0, baby_animation, 40, 40, 20);
 var game_field_2 = canvasMaker("crawling-flippable");
 var baby_field = canvasMaker("swap-for-baby");
 
@@ -148,15 +148,15 @@ function drawGameField() {
   
 
     function drawBaby() {
-        baby.drawEntity(baby_field.ctx);
+        baby_dupe.drawEntity(baby_field.ctx);
         baby_field.ctx.clearRect(0, 0, baby_field.canvas.width, baby_field.canvas.height);
-        baby.drawEntity(baby_field.ctx);
-        baby.move();
+        baby_dupe.drawEntity(baby_field.ctx);
+        baby_dupe.move();
 
-        if (baby.faceLeft && (baby.centerX() == 0)) {
-            baby.flip();
-        } else if (baby.centerX() > baby_field.canvas.width) {
-            baby.flip();
+        if (baby_dupe.faceLeft && (baby_dupe.centerX() == 0)) {
+            baby_dupe.flip();
+        } else if (baby_dupe.centerX() > baby_field.canvas.width) {
+            baby_dupe.flip();
         }
 
     }
@@ -169,7 +169,7 @@ function drawGameField() {
 
 function b13flip() {
     banana_13.flip();
-    baby.flip();
+    baby_dupe.flip();
     
 }
 

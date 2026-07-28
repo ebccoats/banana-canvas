@@ -1,4 +1,3 @@
-
 function canvasMaker(canvasId) {
     const canvas = document.getElementById(canvasId);
     if (canvas.getContext) {

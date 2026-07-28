@@ -330,7 +330,7 @@ class CharacterEntity {
                 this.y_level++;
             }
         }
-        console.log("y level:", this.y_level);
+        // console.log("y level:", this.y_level);
     }
 
     setTargetCtx(target_ctx) {
@@ -417,7 +417,7 @@ const banana_sprite_3 = new SpriteHandler(banana_sprite_source, 20, 13, "banana"
 const anim_1_baby = new CharacterEntity("baby", 29, 24, 5, baby_sprite_source, true, 0, 0);
 const anim_2_baby = new CharacterEntity("baby", 29, 24, 5, baby_sprite_source, true, 0, 0); 
 const anim_3_baby = new CharacterEntity("baby", 29, 24, 5, baby_sprite_source, true, 0, 0);
-console.log({anim_1_baby});
+//console.log({anim_1_baby});
 
 // 3-panel animation functions
 function draw_sprite_animations() {

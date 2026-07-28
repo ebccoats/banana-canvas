@@ -109,7 +109,7 @@ class SpriteHandlerr {
         const sprite_sheet = new Image();
         sprite_sheet.src = this.sprite_info.sprite_sheet_path;
         sprite_sheet.onload = () => {
-            console.log("sprite sheet loaded");
+            // console.log("sprite sheet loaded");
             this.makeCanvases(sprite_sheet);
 
             const number_of_sprites = sprite_sheet.width / this.sprite_info.frame_width;
@@ -129,14 +129,14 @@ class SpriteHandlerr {
         this.contexts.fullSheet.drawImage(sprite_sheet, 0, 0);
         this.canvases.singleFrame = new OffscreenCanvas(this.sprite_info.frame_width, this.sprite_info.frame_height);
         this.contexts.singleFrame = this.canvases.singleFrame.getContext("2d");
-        console.log("singleFrame", this.contexts.singleFrame)
+        // console.log("singleFrame", this.contexts.singleFrame)
     }
 
     // Interactive
     makeFrame = (chosen_frame, flipped) => {
         const frame_coordinates = this.sprite_coordinates[chosen_frame];
         const frame_ctx = this.contexts.singleFrame;
-        console.log(frame_ctx);
+        //console.log(frame_ctx);
 
         frame_ctx.clearRect(0, 0, this.canvases.singleFrame.width, this.canvases.singleFrame.height);
 
@@ -155,7 +155,7 @@ class SpriteHandlerr {
     }
 
     makeAnimFrame = (flipped) => {
-        console.log("currentFrame", this.currentFrame);
+        // console.log("currentFrame", this.currentFrame);
         const frame_index = this.currentFrame;
         const desired_sprite_clipout_index = this.currentAnimation.frames[frame_index];
         const desired_sprite_clipout_coordinates = this.sprite_coordinates[desired_sprite_clipout_index];
@@ -238,13 +238,13 @@ class GameCharacter {
     drawFrame = () => {
         this.frame = this.sprite_handler.makeAnimFrame(this.facingLeft);
         this.sprite_handler.advanceFrame();
-        console.log("animation in progress", this.sprite_handler.animInProgress);
+        //console.log("animation in progress", this.sprite_handler.animInProgress);
 
         this.targetCtx.translate(0, (y_planes[this.y_level] - (this.sprite_handler.canvases.singleFrame.height * scale))); //transform/translate gets character on the right plane no matter how tall their sprite is
         this.targetCtx.drawImage(this.frame, this.x, 0, this.frame.width * scale, this.frame.height * scale);
         this.targetCtx.setTransform(1, 0, 0, 1, 0, 0); //resets transform
 
-        console.log("character:", this.sprite_info.title, this.x, this.y);
+        // console.log("character:", this.sprite_info.title, this.x, this.y);
 
     }
 
